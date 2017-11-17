@@ -9,7 +9,8 @@ import utils.RestJsonFormatExt
 case class Product(id           : Option[Long]  = None,
                    name         : String,
                    description  : String,
-                   qty          : Int)
+                   qty          : Int,
+                   unitPrice    : Price)
 
 
 object Product extends RestJsonFormatExt{

@@ -15,7 +15,8 @@ trait BaseData {
     Some(idLong),
     "Name",
     "Description",
-    1
+    1,
+    1000
   )
 
   def dataCoupon() = Coupon(
