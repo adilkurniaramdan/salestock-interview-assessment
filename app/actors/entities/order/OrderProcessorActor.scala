@@ -1,8 +1,7 @@
-package actors.entities.reference
+package actors.entities.order
 
 import javax.inject.Inject
 
-import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorLogging}
 import akka.event.LoggingReceive
 
