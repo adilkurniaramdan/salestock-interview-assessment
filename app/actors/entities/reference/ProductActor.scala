@@ -7,7 +7,7 @@ import akka.event.LoggingReceive
 import akka.pattern.pipe
 import exceptions.ObjectNotFoundException
 import models.dto.Page
-import models.entities.reference.Product
+import models.entities.reference.{Price, Product}
 import repositories.reference.ProductRepository
 
 import scala.concurrent.ExecutionContext
@@ -26,7 +26,7 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
         .pipeTo(sender())
 
     case m: Create  =>
-      create(m.name, m.description, m.qty)
+      create(m.name, m.description, m.qty, m.unitPrice)
         .map(Created)
         .pipeTo(sender())
 
@@ -36,7 +36,7 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
         .pipeTo(sender())
 
     case m: Update  =>
-      update(m.id, m.name, m.description, m.qty)
+      update(m.id, m.name, m.description, m.qty, m.unitPrice)
         .map(Updated)
         .pipeTo(sender())
 
@@ -50,8 +50,8 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
     productRepository.page(page, size, sort, sortBy, filter)
   }
 
-  private def create(name: String, description: String, qty: Int) = {
-    val product = Product(None, name, description, qty)
+  private def create(name: String, description: String, qty: Int, unitPrice: Price) = {
+    val product = Product(None, name, description, qty, unitPrice)
     productRepository.insert(product)
   }
 
@@ -59,12 +59,12 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
     productRepository.findById(id)
   }
 
-  private def update(id: Long, name: String, description: String, qty: Int) = {
+  private def update(id: Long, name: String, description: String, qty: Int, unitPrice: Price) = {
     productRepository
       .findById(id)
       .flatMap {
         case Some(product)  =>
-          productRepository.update(id, product.copy(name = name, description = description, qty = qty))
+          productRepository.update(id, product.copy(name = name, description = description, qty = qty, unitPrice = unitPrice))
         case None           =>
           failed(ObjectNotFoundException(s"Product with id $id not found"))
       }
@@ -85,9 +85,9 @@ object ProductActor {
 
   sealed trait Command
   case class RequestPage(page: Int, size: Int, sort: String, sortBy: String, filter: String) extends Command
-  case class Create(name: String, description: String, qty: Int) extends Command
+  case class Create(name: String, description: String, qty: Int, unitPrice: Price) extends Command
   case class Get(id: Long) extends Command
-  case class Update(id: Long, name: String, description: String, qty: Int) extends Command
+  case class Update(id: Long, name: String, description: String, qty: Int, unitPrice: Price) extends Command
   case class Delete(id: Long) extends Command
 
   sealed trait Event
