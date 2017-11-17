@@ -1,0 +1,24 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+### NoDocs ###
+GET        /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/lib/swagger-ui", file:String)
+
+### NoDocs ###
+GET        /assets/*file                 controllers.Assets.versioned(path="/public", file: Asset)
+###
+#  operationId: app-info
+#  summary: Information of Application
+#  parameters:
+#  responses:
+#    200:
+#      schema:
+#        $ref: '#/definitions/models.dto.AppInfo'
+#      description: success
+###
+GET        /                             controllers.AppController.index
+### NoDocs ###
+GET        /count                        controllers.CountController.count
+### NoDocs ###
+GET        /message                      controllers.AsyncController.message
