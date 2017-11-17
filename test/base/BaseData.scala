@@ -1,6 +1,8 @@
 package base
 
-import models.entities.reference.Product
+import models.entities.reference.Rates.NominalRate
+import models.entities.reference.{Coupon, Product}
+import utils.helpers.JodaHelper
 
 /**
   * Created by adildramdan on 11/17/17.
@@ -14,5 +16,16 @@ trait BaseData {
     "Name",
     "Description",
     1
+  )
+
+  def dataCoupon() = Coupon(
+    Some(idLong),
+    Some("CODECOUPON"),
+    "Name",
+    "Description",
+    10000,
+    NominalRate,
+    JodaHelper.localDateParse("01/01/2017"),
+    JodaHelper.localDateParse("31/12/2017")
   )
 }
