@@ -1,4 +1,4 @@
-package base
+package testsupport
 
 import models.entities.reference.Rates.NominalRate
 import models.entities.reference.{Coupon, Product}

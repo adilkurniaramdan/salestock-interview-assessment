@@ -1,12 +1,12 @@
 package utils.helpers
 
-import base.BaseSpec
+import testsupport.CompleteWordSpec
 import utils.Constants.DatePattern
 import utils.helpers.JodaHelper._
 /**
   * Created by adildramdan on 11/17/17.
   */
-class JodaHelperSpec extends BaseSpec{
+class JodaHelperSpec extends CompleteWordSpec{
 
   "An JodaHelper " must {
     "localDateTimeParse with valid data" in {

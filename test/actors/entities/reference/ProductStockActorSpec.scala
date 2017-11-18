@@ -1,10 +1,10 @@
 package actors.entities.reference
 
-import akka.testkit.ImplicitSender
-import base.{BaseAkkaSpec, BaseData}
+import akka.testkit.TestProbe
 import org.easymock.EasyMock._
 import org.scalatest.easymock.EasyMockSugar
 import repositories.reference.ProductRepository
+import testsupport.{ActorSpec, BaseData}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future.{successful => future}
@@ -12,11 +12,11 @@ import scala.concurrent.Future.{successful => future}
 /**
   * Created by adildramdan on 11/17/17.
   */
-class ProductCheckerActorSpec extends BaseAkkaSpec with BaseData with ImplicitSender with EasyMockSugar {
+class ProductStockActorSpec extends ActorSpec with BaseData with EasyMockSugar {
   implicit val ec: ExecutionContext = system.dispatcher
 
-  "An ProductCheckerActor " must {
-    "Reply Available for Check message with valid data " in {
+  "A ProductCheckerActor " must {
+    "Reply Stock.Successful for Stock message with valid data " in {
       val product             = dataProduct()
       val productRepository   = mock[ProductRepository]
 
@@ -26,13 +26,18 @@ class ProductCheckerActorSpec extends BaseAkkaSpec with BaseData with ImplicitSe
           .andReturn(future(Some(product)))
       }
       replay(productRepository)
-      val productCheckerActor  = system.actorOf(ProductCheckerActor.props(productRepository))
 
-      productCheckerActor ! ProductCheckerActor.Check(idLong, 1)
-      expectMsg(ProductCheckerActor.Available)
+      val dummyActor          = TestProbe()
+      val productCheckerActor  = system.actorOf(ProductStockActor.props(productRepository))
+
+      val msg                 = Stock(dummyActor.ref, product, 1)
+      productCheckerActor   ! msg
+      expectMsg(Stock.Successful(msg))
+
       verify(productRepository)
     }
-    "Reply NotAvailable for Check message with invalid data " in {
+
+    "Reply Stock.Unsuccessful for Stock message with invalid data " in {
       val product             = dataProduct()
       val productRepository   = mock[ProductRepository]
 
@@ -42,10 +47,13 @@ class ProductCheckerActorSpec extends BaseAkkaSpec with BaseData with ImplicitSe
           .andReturn(future(Some(product)))
       }
       replay(productRepository)
-      val productCheckerActor  = system.actorOf(ProductCheckerActor.props(productRepository))
+      val dummyActor          = TestProbe()
+      val productCheckerActor  = system.actorOf(ProductStockActor.props(productRepository))
 
-      productCheckerActor ! ProductCheckerActor.Check(idLong, 100)
-      expectMsg(ProductCheckerActor.NotAvailable)
+      val msg                 = Stock(dummyActor.ref, product, 100)
+      productCheckerActor   ! msg
+      expectMsg(Stock.Unsuccessful(msg, "Sold out"))
+
       verify(productRepository)
     }
   }

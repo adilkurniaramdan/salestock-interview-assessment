@@ -1,5 +1,6 @@
 package models.entities.reference
 
+import models.entities.Amount
 import models.entities.reference.Rates.Rate
 import org.joda.time.LocalDate
 import play.api.libs.json.Json

@@ -11,7 +11,8 @@ object Dependencies {
   val akkaDependencies          = Seq(
     "com.typesafe.akka"               %% s"akka-actor"                   % akkaVersion,
     "com.typesafe.akka"               %% s"akka-persistence"             % akkaVersion,
-    "com.typesafe.akka"               %% s"akka-testkit"                  % akkaVersion              % "test"
+    "com.typesafe.akka"               %% s"akka-testkit"                  % akkaVersion              % "test",
+    "com.github.dnvriend" %% "akka-persistence-inmemory" % "2.5.1.1"
   )
 
   val testDependencies         = Seq(

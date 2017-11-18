@@ -2,7 +2,7 @@ package actors.entities.reference
 
 import akka.actor.Status.Failure
 import akka.testkit.ImplicitSender
-import base.{BaseAkkaSpec, BaseData}
+import testsupport.{ActorSpec, BaseData}
 import exceptions.ObjectNotFoundException
 import models.dto.Page
 import org.easymock.EasyMock._
@@ -15,10 +15,10 @@ import scala.concurrent.Future.{successful => future}
 /**
   * Created by adildramdan on 11/17/17.
   */
-class ProductActorSpec extends BaseAkkaSpec with BaseData with ImplicitSender with EasyMockSugar {
+class ProductActorSpec extends ActorSpec with BaseData with EasyMockSugar {
   implicit val ec: ExecutionContext = system.dispatcher
 
-  "An ProductActor " must {
+  "A ProductActor " must {
     "Reply ResponsePage for RequestPage message with valid data " in {
       val page                = Page(List(dataProduct()), 1, 10, "asc", "id", 1, "")
       val productRepository   = mock[ProductRepository]

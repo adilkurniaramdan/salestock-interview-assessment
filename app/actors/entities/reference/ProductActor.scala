@@ -8,7 +8,7 @@ import akka.pattern.pipe
 import exceptions.ObjectNotFoundException
 import models.dto.Page
 import models.entities.Price
-import models.entities.reference.{Price, Product}
+import models.entities.reference.Product
 import repositories.reference.ProductRepository
 
 import scala.concurrent.ExecutionContext

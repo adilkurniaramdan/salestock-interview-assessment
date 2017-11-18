@@ -7,8 +7,9 @@ import akka.event.LoggingReceive
 import akka.pattern.pipe
 import exceptions.ObjectNotFoundException
 import models.dto.Page
+import models.entities.Amount
+import models.entities.reference.Coupon
 import models.entities.reference.Rates.Rate
-import models.entities.reference.{Amount, Coupon}
 import org.joda.time.LocalDate
 import repositories.reference.CouponRepository
 import services.application.RandomService

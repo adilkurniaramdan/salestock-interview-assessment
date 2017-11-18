@@ -10,9 +10,13 @@ object CartMessage {
   case class RemoveProductFromCart(product: Product, qty: Int) extends Command
   case object ClearProduct extends Command
 
-
   sealed trait Event
   case class ProductAddedToCart(product: Product, qty: Int) extends Event
+  case class ProductNotAvailable(product: Product, qty: Int, reason: String) extends Event
   case class ProductRemovedFromCart(product: Product, qty: Int = 1) extends Event
   case object ProductCleared extends Event
+
+  sealed trait Query
+  case object  GetProduct extends Query
+  case class   ResponseProduct(products: List[CartItem])
 }

@@ -15,11 +15,11 @@ class CartState(private var items: Map[Product, Int] = Map.empty) {
     if (currentQty == 0) {
       items = items - product
     } else {
-      items = items + (product -> qty)
+      items = items + (product -> currentQty)
     }
   }
 
-  def products: List[Product] = items.keys.toList
+  def products: List[CartItem] = items.map{case (k,v) => CartItem(k, v)}.toList
 
   def add(product: Product, qty: Int): Unit = {
     val newQty = items.get(product).map(_ + qty).getOrElse(qty)

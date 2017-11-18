@@ -1,14 +1,13 @@
 package actors.entities.reference
 
 import akka.actor.Status.Failure
-import akka.testkit.ImplicitSender
-import base.{BaseAkkaSpec, BaseData}
 import exceptions.ObjectNotFoundException
 import models.dto.Page
 import org.easymock.EasyMock._
 import org.scalatest.easymock.EasyMockSugar
 import repositories.reference.CouponRepository
 import services.application.RandomService
+import testsupport.{ActorSpec, BaseData}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future.{successful => future}
@@ -16,10 +15,10 @@ import scala.concurrent.Future.{successful => future}
 /**
   * Created by adildramdan on 11/17/17.
   */
-class CouponActorSpec extends BaseAkkaSpec with BaseData with ImplicitSender with EasyMockSugar {
+class CouponActorSpec extends ActorSpec with BaseData with EasyMockSugar {
   implicit val ec: ExecutionContext = system.dispatcher
 
-  "An CouponActor " must {
+  "A CouponActor " must {
     "Reply ResponsePage for RequestPage message with valid data " in {
       val page                = Page(List(dataCoupon()), 1, 10, "asc", "id", 1, "")
       val couponRepository    = mock[CouponRepository]
