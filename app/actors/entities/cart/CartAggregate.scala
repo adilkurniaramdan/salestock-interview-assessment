@@ -1,6 +1,7 @@
 package actors.entities.cart
 
 import actors.entities.cart.CartMessage._
+import actors.entities.reference.ProductCheckerActor
 import akka.actor.{ActorLogging, ActorRef}
 import akka.persistence.PersistentActor
 import models.entities.reference.Product
@@ -8,7 +9,7 @@ import models.entities.reference.Product
 /**
   * Created by adildramdan on 11/18/17.
   */
-class CartAggregate(val id: String, val productActor: ActorRef) extends PersistentActor with ActorLogging {
+class CartAggregate(val id: String, val productCheckerActor: ActorRef) extends PersistentActor with ActorLogging {
 
   private val state   = new CartState()
 
@@ -26,10 +27,12 @@ class CartAggregate(val id: String, val productActor: ActorRef) extends Persiste
 
   private def handleAddProductCommand: Receive = {
     case m: AddProductToCart  =>
+    case ProductCheckerActor.Available    =>
+    case ProductCheckerActor.NotAvailable =>
   }
 
   private def requestForAvaialabilityProduct(product: Product, qty: Int) = {
-    productActor !
+    productCheckerActor ! Product
   }
 
 
