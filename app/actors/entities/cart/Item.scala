@@ -3,4 +3,4 @@ import models.entities.reference.Product
 /**
   * Created by adildramdan on 11/18/17.
   */
-case class CartItem(product: Product, qty: Int)
+case class Item(product: Product, qty: Int)

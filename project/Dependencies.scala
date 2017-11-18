@@ -44,5 +44,6 @@ object Dependencies {
     webjarDependencies        ++
     Seq(logback)
 
+
 }
 

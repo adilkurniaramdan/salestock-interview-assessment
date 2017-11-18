@@ -15,6 +15,7 @@ case class Coupon(id          : Option[Long]  = None,
                   description : String,
                   amount      : Amount,
                   rate        : Rate,
+                  qty         : Int,
                   start       : LocalDate,
                   end         : LocalDate)
 

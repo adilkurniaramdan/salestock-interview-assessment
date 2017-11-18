@@ -8,6 +8,7 @@ import akka.pattern.pipe
 import exceptions.ObjectNotFoundException
 import models.dto.Page
 import models.entities.Amount
+import models.entities.order.OrderCoupon
 import models.entities.reference.Coupon
 import models.entities.reference.Rates.Rate
 import org.joda.time.LocalDate
@@ -31,7 +32,7 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
         .pipeTo(sender())
 
     case m: Create  =>
-      create(m.name, m.description, m.amount, m.rate, m.start, m.end)
+      create(m.name, m.description, m.amount, m.rate, m.qty, m.start, m.end)
         .map(Created)
         .pipeTo(sender())
 
@@ -41,7 +42,7 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
         .pipeTo(sender())
 
     case m: Update  =>
-      update(m.id, m.name, m.description, m.amount, m.rate, m.start, m.end)
+      update(m.id, m.name, m.description, m.amount, m.rate, m.qty, m.start, m.end)
         .map(Updated)
         .pipeTo(sender())
 
@@ -49,13 +50,21 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
       delete(m.id)
         .map(Deleted)
         .pipeTo(sender())
+
+    case m: UpdateQty =>
+      updateQty(m.id, m.qty)
+
+    case m: ValidateCoupon  =>
+      validateCoupon(m)
+        .pipeTo(sender())
+
   }
 
   private def requestPage(page: Int, size: Int, sort: String, sortBy: String, filter: String) = {
     couponRepository.page(page, size, sort, sortBy, filter)
   }
 
-  private def create(name : String, description : String, amount: Amount, rate: Rate, start: LocalDate, end: LocalDate) = {
+  private def create(name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) = {
     val coupon = Coupon(
       id          = None,
       code        = None,
@@ -63,6 +72,7 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
       description = description,
       amount      = amount,
       rate        = rate,
+      qty         = qty,
       start       = start,
       end         = end
     )
@@ -90,20 +100,58 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
     couponRepository.findById(id)
   }
 
-  private def update(id: Long, name : String, description : String, amount: Amount, rate: Rate, start: LocalDate, end: LocalDate) = {
+  private def update(id: Long, name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) = {
     couponRepository
       .findById(id)
       .flatMap {
         case Some(coupon)  =>
           couponRepository
-            .update(id, coupon.copy(name = name, description = description, amount = amount, rate = rate, start = start, end = end))
+            .update(
+              id,
+              coupon.copy(name = name, description = description, amount = amount, rate = rate, qty = qty, start = start, end = end)
+            )
         case None           =>
           failed(ObjectNotFoundException(s"Coupon with id $id not found"))
       }
   }
 
+  private def updateQty(id: Long, qty: Int) =
+    couponRepository
+      .findById(id)
+      .flatMap {
+        case Some(product)  =>
+          couponRepository.update(id, product.copy(qty = product.qty + qty))
+        case None           =>
+          failed(ObjectNotFoundException(s"Coupon with id $id not found"))
+      }
+
   private def delete(id: Long)  = {
     couponRepository.delete(id)
+  }
+
+  private def validateCoupon(m: ValidateCoupon) = {
+    couponRepository
+      .findOneByCode(m.code)
+      .map{
+        case Some(coupon) if coupon.start.isBefore(LocalDate.now())
+          && coupon.end.isAfter(LocalDate.now())
+          && coupon.qty >= 0 =>
+          ValidateCoupon.Successful(
+            m,
+            OrderCoupon(
+              coupon.id,
+              coupon.code,
+              coupon.name,
+              coupon.description,
+              coupon.amount,
+              coupon.rate,
+              coupon.start,
+              coupon.end
+            )
+          )
+        case _  =>
+          ValidateCoupon.Unsuccessful(m, "Coupon is not valid")
+      }
   }
 
 }
@@ -117,10 +165,11 @@ object CouponActor {
 
   sealed trait Command
   case class RequestPage(page: Int, size: Int, sort: String, sortBy: String, filter: String) extends Command
-  case class Create(name : String, description : String, amount: Amount, rate: Rate, start: LocalDate, end: LocalDate) extends Command
+  case class Create(name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) extends Command
   case class Get(id: Long) extends Command
-  case class Update(id: Long, name : String, description : String, amount: Amount, rate: Rate, start: LocalDate, end: LocalDate) extends Command
+  case class Update(id: Long, name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) extends Command
   case class Delete(id: Long) extends Command
+  case class UpdateQty(id: Long, qty: Int) extends Command
 
   sealed trait Event
   case class ResponsePage(page: Page[Coupon]) extends Event

@@ -2,6 +2,7 @@ package actors.entities.reference
 
 import javax.inject.Inject
 
+import actors.entities.cart.Item
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.event.LoggingReceive
 import akka.pattern.pipe
@@ -11,8 +12,8 @@ import models.entities.Price
 import models.entities.reference.Product
 import repositories.reference.ProductRepository
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future.failed
+import scala.concurrent.Future.{failed, successful => future}
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * Created by adildramdan on 11/17/17.
@@ -45,6 +46,14 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
       delete(m.id)
         .map(Deleted)
         .pipeTo(sender())
+
+    case m: UpdateQty =>
+      updateQty(m.id, m.qty)
+
+    case m: ValidateItem     =>
+      checkProductStock(m)
+        .pipeTo(sender())
+
   }
 
   private def requestPage(page: Int, size: Int, sort: String, sortBy: String, filter: String) = {
@@ -71,8 +80,37 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
       }
   }
 
+  private def updateQty(id: Long, qty: Int) =
+    productRepository
+      .findById(id)
+      .flatMap {
+        case Some(product)  =>
+          productRepository.update(id, product.copy(qty = product.qty + qty))
+        case None           =>
+          failed(ObjectNotFoundException(s"Product with id $id not found"))
+      }
+
   private def delete(id: Long)  = {
     productRepository.delete(id)
+  }
+
+  private def checkProductStock(m: ValidateItem) = {
+    def loop(items: List[Item], acc: List[(Item, Boolean)]): Future[List[(Item, Boolean)]] = items match {
+      case h :: t   =>
+        productRepository
+          .findById(h.product.id.get)
+          .flatMap{
+            case Some(product) if product.qty >= h.qty  => loop(t, (h, true) :: acc)
+            case _                                      => loop(t, (h, false) :: acc)
+          }
+      case Nil  =>
+        future(acc)
+    }
+    val check = loop(m.items, Nil)
+    check.map(_.forall{case (_, available) => available}).map{
+      case true   => ValidateItem.Successful(m)
+      case false  => ValidateItem.Unsuccessful(m, "Not all item available")
+    }
   }
 
 }
@@ -90,7 +128,7 @@ object ProductActor {
   case class Get(id: Long) extends Command
   case class Update(id: Long, name: String, description: String, qty: Int, unitPrice: Price) extends Command
   case class Delete(id: Long) extends Command
-  case class RequestAvailability(id: Long, qty: Int) extends Command
+  case class UpdateQty(id: Long, qty: Int) extends Command
 
   sealed trait Event
   case class ResponsePage(page: Page[Product]) extends Event

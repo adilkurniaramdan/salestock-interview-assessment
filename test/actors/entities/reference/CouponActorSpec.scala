@@ -57,7 +57,7 @@ class CouponActorSpec extends ActorSpec with BaseData with EasyMockSugar {
       replay(couponRepository, randomService)
       val couponActor  = system.actorOf(CouponActor.props(couponRepository, randomService))
       couponActor ! CouponActor.Create(
-        coupon.name, coupon.description, coupon.amount, coupon.rate, coupon.start, coupon.end
+        coupon.name, coupon.description, coupon.amount, coupon.rate, coupon.qty, coupon.start, coupon.end
       )
 
       expectMsg(CouponActor.Created(coupon))
@@ -108,7 +108,7 @@ class CouponActorSpec extends ActorSpec with BaseData with EasyMockSugar {
 
       val couponActor   = system.actorOf(CouponActor.props(couponRepository, randomService))
       couponActor ! CouponActor.Update(
-        idLong, coupon.name, coupon.description, coupon.amount, coupon.rate, coupon.start, coupon.end
+        idLong, coupon.name, coupon.description, coupon.amount, coupon.rate, coupon.qty, coupon.start, coupon.end
       )
       expectMsg(CouponActor.Updated(coupon))
 
@@ -126,7 +126,7 @@ class CouponActorSpec extends ActorSpec with BaseData with EasyMockSugar {
       replay(couponRepository)
       val couponActor   = system.actorOf(CouponActor.props(couponRepository, randomService))
       couponActor ! CouponActor.Update(
-        idLong, coupon.name, coupon.description, coupon.amount, coupon.rate, coupon.start, coupon.end
+        idLong, coupon.name, coupon.description, coupon.amount, coupon.rate, coupon.qty, coupon.start, coupon.end
       )
       expectMsg(Failure(ObjectNotFoundException(s"Coupon with id $idLong not found")))
 

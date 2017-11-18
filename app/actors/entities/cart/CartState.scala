@@ -19,7 +19,7 @@ class CartState(private var items: Map[Product, Int] = Map.empty) {
     }
   }
 
-  def products: List[CartItem] = items.map{case (k,v) => CartItem(k, v)}.toList
+  def products: List[Item] = items.map{case (k,v) => Item(k, v)}.toList
 
   def add(product: Product, qty: Int): Unit = {
     val newQty = items.get(product).map(_ + qty).getOrElse(qty)

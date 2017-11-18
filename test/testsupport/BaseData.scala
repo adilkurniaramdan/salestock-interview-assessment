@@ -26,6 +26,7 @@ trait BaseData {
     "Description",
     10000,
     NominalRate,
+    1,
     JodaHelper.localDateParse("01/01/2017"),
     JodaHelper.localDateParse("31/12/2017")
   )
