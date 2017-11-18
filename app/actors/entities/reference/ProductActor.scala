@@ -7,6 +7,7 @@ import akka.event.LoggingReceive
 import akka.pattern.pipe
 import exceptions.ObjectNotFoundException
 import models.dto.Page
+import models.entities.Price
 import models.entities.reference.{Price, Product}
 import repositories.reference.ProductRepository
 
@@ -89,6 +90,7 @@ object ProductActor {
   case class Get(id: Long) extends Command
   case class Update(id: Long, name: String, description: String, qty: Int, unitPrice: Price) extends Command
   case class Delete(id: Long) extends Command
+  case class RequestAvailability(id: Long, qty: Int) extends Command
 
   sealed trait Event
   case class ResponsePage(page: Page[Product]) extends Event

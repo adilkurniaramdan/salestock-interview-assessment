@@ -1,5 +1,6 @@
 package models.entities.reference
 
+import models.entities.Price
 import play.api.libs.json.Json
 import utils.RestJsonFormatExt
 

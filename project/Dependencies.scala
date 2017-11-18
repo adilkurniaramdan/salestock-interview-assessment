@@ -10,6 +10,7 @@ object Dependencies {
 
   val akkaDependencies          = Seq(
     "com.typesafe.akka"               %% s"akka-actor"                   % akkaVersion,
+    "com.typesafe.akka"               %% s"akka-persistence"             % akkaVersion,
     "com.typesafe.akka"               %% s"akka-testkit"                  % akkaVersion              % "test"
   )
 

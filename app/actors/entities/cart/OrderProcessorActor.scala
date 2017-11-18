@@ -1,4 +1,4 @@
-package actors.entities.order
+package actors.entities.cart
 
 import javax.inject.Inject
 
