@@ -1,6 +1,7 @@
 package controllers
 
 import java.lang.management.ManagementFactory
+import java.net.InetAddress
 import javax.inject._
 
 import akka.actor.ActorSystem
@@ -9,7 +10,7 @@ import models.dto.AppInfo
 import net.ceedubs.ficus.Ficus._
 import play.api.Configuration
 import play.api.libs.json.Json._
-import play.api.mvc._
+import play.api.mvc.{request, _}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future.{successful => future}
@@ -29,8 +30,9 @@ class AppController @Inject()(cc                      : ControllerComponents,
 
   private def getUptime = Duration(ManagementFactory.getRuntimeMXBean.getUptime, MILLISECONDS).toSeconds
 
-  def index = Action.async {
-    val info = AppInfo(name, version, getUptime)
+  def index = Action.async(parse.empty) { implicit request =>
+    val swagger = "http://" + request.host + "/docs/swagger-ui/index.html?url=/assets/swagger.json"
+    val info = AppInfo(name, version, swagger, getUptime)
     future(info)
       .map(toJson(_))
       .map(Ok(_))

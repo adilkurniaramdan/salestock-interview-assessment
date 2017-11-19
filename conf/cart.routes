@@ -7,7 +7,7 @@
 #      default:
 #    - name: body
 #      schema:
-#        $ref: '#/definitions/models.forms.order.CartForm.Add'
+#        $ref: '#/definitions/models.forms.cart.CartForm.Add'
 #  responses:
 #    201:
 #      description: success
@@ -22,7 +22,7 @@ POST          /api/v1/cart/:productId/add        @controllers.CartController.add
 #      default:
 #    - name: body
 #      schema:
-#        $ref: '#/definitions/models.forms.order.CartForm.Update'
+#        $ref: '#/definitions/models.forms.cart.CartForm.Remove'
 #  responses:
 #    200:
 #      description: success
