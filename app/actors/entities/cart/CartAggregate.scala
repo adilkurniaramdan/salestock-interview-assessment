@@ -1,6 +1,6 @@
 package actors.entities.cart
 
-import actors.entities.UnknownCommand
+import actors.{Event, UnknownCommand}
 import akka.actor.{ActorLogging, ActorRef, Props}
 import akka.persistence.PersistentActor
 import models.entities.reference.Product
@@ -8,7 +8,7 @@ import models.entities.reference.Product
 /**
   * Created by adildramdan on 11/18/17.
   */
-class CartAggregate(val id: String) extends PersistentActor with ActorLogging {
+class CartAggregate() extends PersistentActor with ActorLogging {
 
   private val state   = new CartState()
 
@@ -75,6 +75,6 @@ class CartAggregate(val id: String) extends PersistentActor with ActorLogging {
 }
 
 object CartAggregate {
-  def props(id: String) =
-    Props(new CartAggregate(id))
+  def props() =
+    Props(new CartAggregate())
 }

@@ -46,23 +46,6 @@ trait BaseData {
     Some("SHIPPING-ID")
   )
 
-  object ProductFormData {
-    def create() = ProductForm.Create(
-      "Name",
-      "Description",
-      100,
-      1000
-    )
-    def update() = ProductForm.Update(
-      "Name Update",
-      "Description Update",
-      200,
-      2000
-    )
-
-
-  }
-
 
 
 }

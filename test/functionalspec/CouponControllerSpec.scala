@@ -6,6 +6,7 @@ import models.entities.reference.Coupon
 import models.forms.reference.CouponForm.{Create, Update}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Configuration
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -21,6 +22,7 @@ import utils.Mapper
 class CouponControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSuite {
 
   val application = new GuiceApplicationBuilder()
+    .loadConfig(env => Configuration.load(env))
     .overrides(bind[RandomService].to[FakeRandomServiceImpl])
     .build()
 

@@ -6,6 +6,7 @@ import models.entities.reference.Product
 import models.forms.reference.ProductForm.{Create, Update}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Configuration
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json._
@@ -19,6 +20,7 @@ import utils.Mapper
 class ProductControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSuite {
 
   val application = new GuiceApplicationBuilder()
+    .loadConfig(env => Configuration.load(env))
     .build()
 
   "ProductControllerSpec" should {

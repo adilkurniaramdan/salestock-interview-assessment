@@ -25,7 +25,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
   "A CartAggretageActor " must {
     "reply ProductAddedToCart for AddProductToCart Message with valid data" in {
       val product             = dataProduct()
-      val cartActor           = system.actorOf(CartAggregate.props(cartId))
+      val cartActor           = system.actorOf(CartAggregate.props())
 
       cartActor ! AddProductToCart(product, 1)
       expectMsg(ProductAddedToCart(product, 1))
@@ -34,7 +34,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
 
     "reply ResponseProduct for GetProduct Message with valid data" in {
       val product             = dataProduct().copy(qty = 100)
-      val cartActor           = system.actorOf(CartAggregate.props(cartId))
+      val cartActor           = system.actorOf(CartAggregate.props())
 
       waitingFor[ProductAddedToCart] {
         cartActor ! AddProductToCart(product, 1)
@@ -50,7 +50,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
 
     "reply ProductRemovedFromCart for RemoveProductFromCart Message with valid data" in {
       val product             = dataProduct()
-      val cartActor           = system.actorOf(CartAggregate.props(cartId))
+      val cartActor           = system.actorOf(CartAggregate.props())
 
       waitingFor[ProductAddedToCart] {
         cartActor ! AddProductToCart(product, 1)
@@ -62,7 +62,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
 
     "reply Nothing for RemoveProductFromCart Message with invalid data" in {
       val product             = dataProduct()
-      val cartActor           = system.actorOf(CartAggregate.props(cartId))
+      val cartActor           = system.actorOf(CartAggregate.props())
 
       cartActor ! RemoveProductFromCart(product, 1)
       expectNoMsg(1 second)
@@ -70,7 +70,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
 
     "reply ResponseProduct subtracted for ProductAddedToCart Message with valid data" in {
       val product             = dataProduct().copy(qty = 100)
-      val cartActor           = system.actorOf(CartAggregate.props(cartId))
+      val cartActor           = system.actorOf(CartAggregate.props())
 
       waitingFor[ProductAddedToCart] {
         cartActor ! AddProductToCart(product, 3)
@@ -86,7 +86,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
 
     "reply ResponseProduct Nil for ProductAddedToCart Message with valid data" in {
       val product             = dataProduct().copy(qty = 100)
-      val cartActor           = system.actorOf(CartAggregate.props(cartId))
+      val cartActor           = system.actorOf(CartAggregate.props())
 
       waitingFor[ProductAddedToCart] {
         cartActor ! AddProductToCart(product, 3)
@@ -102,7 +102,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
 
     "reply ProductCleared for ClearProduct Message with valid data" in {
       val product             = dataProduct().copy(qty = 100)
-      val cartActor           = system.actorOf(CartAggregate.props(cartId))
+      val cartActor           = system.actorOf(CartAggregate.props())
 
       waitingFor[ProductAddedToCart] {
         cartActor ! AddProductToCart(product, 3)
@@ -122,7 +122,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
     "recovered after kill" which {
       val product             = dataProduct().copy(qty = 100)
       val cartId              = "id-actortoberecover"
-      var cartActor           = system.actorOf(CartAggregate.props(cartId), cartId)
+      var cartActor           = system.actorOf(CartAggregate.props(), cartId)
       watch(cartActor)
       "kill the actor" in {
 
@@ -136,7 +136,7 @@ class CartAggregateSpec extends PersistentActorSpec with BaseData with BeforeAnd
       }
 
       "recover the data" in {
-        cartActor           = system.actorOf(CartAggregate.props(cartId), cartId)
+        cartActor           = system.actorOf(CartAggregate.props(), cartId)
         cartActor ! GetProduct
         expectMsg(ResponseProduct(List(Item(product, 1))))
       }

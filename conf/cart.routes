@@ -1,0 +1,56 @@
+###
+#  summary: Add Item to Cart
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.CartForm.Add'
+#  responses:
+#    201:
+#      description: success
+###
+POST          /api/v1/cart/:productId/add        @controllers.CartController.add(productId: Long)
+###
+#  summary: Remove Item from Cart
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.CartForm.Update'
+#  responses:
+#    200:
+#      description: success
+###
+POST           /api/v1/cart/:productId/remove        @controllers.CartController.remove(productId:Long)
+###
+#  summary: Get Item In Cart
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/actors.entities.cart.Item'
+###
+GET           /api/v1/cart                   @controllers.CartController.get()
+###
+#  summary: Clear Cart
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default: 
+#  responses:
+#    200:
+#      description: success
+###
+DELETE        /api/v1/cart                   @controllers.CartController.clear()

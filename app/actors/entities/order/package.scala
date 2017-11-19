@@ -1,10 +1,11 @@
 package actors.entities
 
+import actors.Command
 import actors.entities.cart.Item
 import models.entities.order.{OrderCoupon, OrderInformation, OrderShipment, Payment}
 
 package object order{
-  sealed trait Command
+
   case class Submit(orderId: String, userId: String, coupon: Option[String], payment: Payment, info: OrderInformation) extends Command
   case class RequestVerification(orderId: String, paymentProof: String) extends Command
   case class Verify(orderId: String) extends Command

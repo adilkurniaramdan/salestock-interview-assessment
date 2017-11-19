@@ -24,4 +24,7 @@ GET        /count                        controllers.CountController.count
 GET        /message                      controllers.AsyncController.message
 
 ->         /                             coupon.Routes
+
 ->         /                             product.Routes
+
+->         /                             cart.Routes

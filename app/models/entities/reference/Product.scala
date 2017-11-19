@@ -12,3 +12,7 @@ case class Product(id           : Option[Long]  = None,
                    description  : String,
                    qty          : Int,
                    unitPrice    : Price)
+
+object Product {
+  implicit val productJsonFormat = Json.format[Product]
+}

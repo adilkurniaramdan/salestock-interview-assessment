@@ -21,7 +21,6 @@ object Common {
       "-Xlint:unchecked",
       "-Xlint:deprecation"
     ),
-    javaOptions in Test                       += "-Dconfig.file=conf/application.test.conf",
     javaOptions in run                        ++= Seq(
       "-Xms128m",
       "-Xmx1024m"

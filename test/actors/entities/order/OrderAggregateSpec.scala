@@ -47,7 +47,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       val orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor))
 
@@ -104,7 +104,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       val orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor))
 
@@ -140,7 +140,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       val orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor))
 
@@ -171,7 +171,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       val orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor))
 
@@ -202,7 +202,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       val orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor))
 
@@ -234,7 +234,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       val orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor))
 
@@ -264,7 +264,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       val orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor))
 
@@ -295,7 +295,7 @@ class OrderAggregateSpec extends PersistentActorSpec with BaseData with BeforeAn
 
       val productActor        = system.actorOf(ProductActor.props(productRepository))
       val couponActor         = system.actorOf(CouponActor.props(couponRepository, randomService))
-      val cartActor           = system.actorOf(CartAggregate.props(cartId), "cart-actor-" + cartId)
+      val cartActor           = system.actorOf(CartAggregate.props(), "cart-actor-" + cartId)
       val shipmentActor       = system.actorOf(FakeShipmentActor.props())
       var orderActor          = system.actorOf(OrderAggregate.props(productActor, couponActor, cartActor, shipmentActor), "order-actor-"+orderId)
 
