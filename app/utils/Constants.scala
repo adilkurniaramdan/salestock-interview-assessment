@@ -34,5 +34,6 @@ object Constants {
     val AuthenticationFailed    = "AUTHENTICATION_FAILED"
     val InvalidData             = "INVALID_DATA"
     val OutOfStock              = "OUT_OF_STOCK"
+    val OtherError              = "OTHER_ERROR"
   }
 }
