@@ -47,6 +47,21 @@ case class OrderState(private var orders: Map[String, (Order, String)] = Map.emp
 
   def orderDetail: List[OrderDetail] = orders.map{case (_, v) => OrderDetail(v._1, v._2, calculateTotal(v._1))}.toList
 
+  def get(orderId: String) =
+    orders.get(orderId).map{v => OrderDetail(v._1, v._2, calculateTotal(v._1))}
+
+  def getByShippingId(shippingId: String) =
+    orders.values
+      .filter{case (order, _) => order.shipmentId.contains(shippingId)}
+      .map{v => OrderDetail(v._1, v._2, calculateTotal(v._1))}
+      .headOption
+
+  def getByUser(userId: String) =
+    orders.values
+      .filter{case (order, _) => order.userId == userId}
+      .map{v => OrderDetail(v._1, v._2, calculateTotal(v._1))}
+      .toList
+
   private def calculateTotal(order: Order) = {
     val total   = order.items.map(item => item.product.unitPrice * item.qty).sum
     order.coupon match {

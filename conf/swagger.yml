@@ -1,8 +1,19 @@
 ---
   swagger: "2.0"
   info:
-    title: "Poweramp API"
-    description: "Power your music"
+    title: "My Assessment API"
+    description: "https://aqueous-chamber-48724.herokuapp.com/ </br>
+                  https://git.heroku.com/aqueous-chamber-48724.git </br>
+                  https://github.com/adilkurniaramdan/my-assessment.git </br>
+
+                  complete assessment scenario in /test/functionalspec/OrderControllerFinishedSpec </br>
+
+                  User = </br>
+                      - username  = user@user.com </br>
+                      - password  = 123456 </br>
+                  Admin = </br>
+                      - username  = admin@admin.com </br>
+                      - password  = 123456"
     version: "1.0.0"
   consumes:
     - application/json

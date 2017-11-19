@@ -31,7 +31,7 @@ class AppController @Inject()(cc                      : ControllerComponents,
   private def getUptime = Duration(ManagementFactory.getRuntimeMXBean.getUptime, MILLISECONDS).toSeconds
 
   def index = Action.async(parse.empty) { implicit request =>
-    val swagger = "http://" + request.host + "/docs/swagger-ui/index.html?url=/assets/swagger.json"
+    val swagger = "https://" + request.host + "/docs/swagger-ui/index.html?url=/assets/swagger.json"
     val info = AppInfo(name, version, swagger, getUptime)
     future(info)
       .map(toJson(_))

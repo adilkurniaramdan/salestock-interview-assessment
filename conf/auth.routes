@@ -1,0 +1,26 @@
+###
+#  summary: SignIn
+#  parameters:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.reference.UserForm.SignIn'
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/models.dto.Token'
+###
+POST        /api/v1/sign-in         controllers.AuthController.signIn
+###
+#  summary: SignOut
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      required: true
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+###
+GET         /api/v1/sign-out        controllers.AuthController.signOut

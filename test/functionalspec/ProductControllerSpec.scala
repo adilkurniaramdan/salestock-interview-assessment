@@ -1,4 +1,5 @@
 package functionalspec
+import com.mohiva.play.silhouette.test._
 import models.dto.DtoMapperFormats._
 import models.dto.Page
 import models.dto.reference.ProductDto
@@ -6,32 +7,29 @@ import models.entities.reference.Product
 import models.forms.reference.ProductForm.{Create, Update}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Configuration
 import play.api.http.Status
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.application.RandomService
-import testsupport.{BaseData, FakeRandomServiceImpl}
+import testsupport.{BaseData, Context}
 import utils.Mapper
+import utils.auth.DefaultEnv
 /**
   * Created by adildramdan on 11/19/17.
   */
-class ProductControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSuite {
-
-  val application = new GuiceApplicationBuilder()
-    .loadConfig(env => Configuration.load(env))
-    .overrides(bind[RandomService].to(new FakeRandomServiceImpl("THIS_IS_RANDOM_RESULT")))
-    .build()
+class ProductControllerSpec extends PlaySpec with BaseData with Context with GuiceOneAppPerSuite {
 
   "ProductControllerSpec" should {
     "return Created for Create with valid data" in {
       val product     = dataProduct()
       val request     = Create(product.name, product.description, product.qty, product.unitPrice)
       val response    = Mapper.map[Product, ProductDto](product)
-      val create      = route(application, FakeRequest(POST, "/api/v1/products").withBody(toJson(request))).get
+      val create      = route(
+        application,
+        FakeRequest(POST, "/api/v1/products")
+          .withBody(toJson(request))
+          .withAuthenticator[DefaultEnv](admin.loginInfo)
+      ).get
 
       status(create) mustBe Status.CREATED
       contentType(create) mustBe Some("application/json")
@@ -48,7 +46,11 @@ class ProductControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSu
         total = 1,
         filter= ""
       )
-      val page      = route(application, FakeRequest(GET, "/api/v1/products?page=1&size=10&sort=asc&sortBy=id&filter")).get
+      val page      = route(
+        application,
+        FakeRequest(GET, "/api/v1/products?page=1&size=10&sort=asc&sortBy=id&filter")
+          .withAuthenticator[DefaultEnv](admin.loginInfo)
+      ).get
 
       status(page) mustBe Status.OK
       contentType(page) mustBe Some("application/json")
@@ -59,7 +61,11 @@ class ProductControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSu
       val product     = dataProduct()
       val request     = Update(product.name, product.description, product.qty, product.unitPrice)
       val response    = Mapper.map[Product, ProductDto](product)
-      val update      = route(application, FakeRequest(PUT, "/api/v1/products/"+ product.id.get).withBody(toJson(request))).get
+      val update      = route(
+        application,
+        FakeRequest(PUT, "/api/v1/products/"+ product.id.get).withBody(toJson(request))
+          .withAuthenticator[DefaultEnv](admin.loginInfo)
+      ).get
 
       status(update) mustBe Status.OK
       contentType(update) mustBe Some("application/json")
@@ -69,7 +75,11 @@ class ProductControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSu
     "return Ok for Get with valid data" in {
       val product     = dataProduct()
       val response    = Mapper.map[Product, ProductDto](product)
-      val get         = route(application, FakeRequest(GET, "/api/v1/products/"+ product.id.get)).get
+      val get         = route(
+        application,
+        FakeRequest(GET, "/api/v1/products/"+ product.id.get)
+          .withAuthenticator[DefaultEnv](admin.loginInfo)
+      ).get
 
       status(get) mustBe Status.OK
       contentType(get) mustBe Some("application/json")
@@ -78,7 +88,11 @@ class ProductControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSu
 
     "return Ok for Delete with valid data" in {
       val product     = dataProduct()
-      val delete         = route(application, FakeRequest(DELETE, "/api/v1/products/"+ product.id.get)).get
+      val delete         = route(
+        application,
+        FakeRequest(DELETE, "/api/v1/products/"+ product.id.get)
+          .withAuthenticator[DefaultEnv](admin.loginInfo)
+      ).get
 
       status(delete) mustBe Status.OK
       contentType(delete) mustBe None

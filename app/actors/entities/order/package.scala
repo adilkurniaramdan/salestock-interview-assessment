@@ -24,7 +24,11 @@ package object order{
 
   sealed trait Query
   case object  GetOrder extends Query
+  case class  GetOrderById(orderId: String) extends Query
+  case class  GetOrderByShippingId(shippingId: String) extends Query
+  case class  GetOrderByUser(userId: String) extends Query
   case class   ResponseOrder(order: List[OrderDetail])
+  case class   ResponseOrderOpt(order: Option[OrderDetail])
   case class  ItemNotAvailable(reason: String)
   case class  CouponNotValid(reason: String)
 }

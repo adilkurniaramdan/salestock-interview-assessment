@@ -18,10 +18,8 @@ GET        /assets/*file                 controllers.Assets.versioned(path="/pub
 #      description: success
 ###
 GET        /                             controllers.AppController.index
-### NoDocs ###
-GET        /count                        controllers.CountController.count
-### NoDocs ###
-GET        /message                      controllers.AsyncController.message
+
+->         /                             auth.Routes
 
 ->         /                             coupon.Routes
 

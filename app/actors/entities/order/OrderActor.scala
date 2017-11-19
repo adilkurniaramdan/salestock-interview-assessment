@@ -161,7 +161,10 @@ class OrderActor @Inject()(@Named(ProductActor.Name)
   }
 
   private def handleQueryCommand: Receive = {
-    case GetOrder => sender() ! ResponseOrder(state.orderDetail)
+    case GetOrder          => sender() ! ResponseOrder(state.orderDetail)
+    case m: GetOrderById   => sender() ! ResponseOrderOpt(state.get(m.orderId))
+    case m: GetOrderByUser => sender() ! ResponseOrder(state.getByUser(m.userId))
+    case m: GetOrderByShippingId => sender() ! ResponseOrderOpt(state.getByShippingId(m.shippingId))
   }
 
   private def persistAndUpdateState(e: Event, replyTo: ActorRef = sender()) {

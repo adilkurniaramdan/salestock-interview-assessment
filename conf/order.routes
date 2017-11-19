@@ -102,4 +102,46 @@ POST        /api/v1/order/finish                      @controllers.OrderControll
 #      schema:
 #        $ref: '#/definitions/actors.entities.order.Item'
 ###
-GET         /api/v1/order                             @controllers.OrderController.get()
+GET         /api/v1/order                             @controllers.OrderController.getAll()
+###
+#  summary: Get Item In Order By User LoggedIn
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/actors.entities.order.Item'
+###
+GET         /api/v1/order-by-user                     @controllers.OrderController.getByUser()
+###
+#  summary: Get Item By ID
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/actors.entities.order.Item'
+###
+GET         /api/v1/order-by-id/:orderId              @controllers.OrderController.get(orderId: String)
+###
+#  summary: Get Item By Shipping ID
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/actors.entities.order.Item'
+###
+GET         /api/v1/order-by-shipping-id/:shippingId              @controllers.OrderController.get(shippingId: String)

@@ -48,7 +48,7 @@ class ResponseUtil @Inject() (components            : ControllerComponents,
     (r: Option[T]) => r
       .map(toJson(_))
       .map(Ok(_))
-      .getOrElse(BadRequest)
+      .getOrElse(badRequest(ErrorCode.InvalidData, "Item not found"))
 
   def boolean =
     (r: Boolean) =>
