@@ -24,7 +24,7 @@ trait BaseData {
 
   def dataCoupon() = Coupon(
     Some(idLong),
-    Some("CODECOUPON"),
+    Some("THIS_IS_RANDOM_RESULT"),
     "Name",
     "Description",
     1000,
@@ -35,15 +35,15 @@ trait BaseData {
   )
 
   def dataOrder() = Order(
-    idLong.toString,
-    idLong.toString,
-    List(Item(dataProduct(), 1)),
-    Some(OrderCoupon(Some(idLong), Some("CODECOUPON"), "Name", "Description", 1000, Rate.Nominal, JodaHelper.localDateParse("01/01/2017"), JodaHelper.localDateParse("31/12/2017"))),
+    "THIS_IS_RANDOM_RESULT",
+    "USER_ID",
+    List(Item(dataProduct().copy(qty = 100), 10)),
+    Some(OrderCoupon(Some(idLong), Some("THIS_IS_RANDOM_RESULT"), "Name", "Description", 1000, Rate.Nominal, JodaHelper.localDateParse("01/01/2017"), JodaHelper.localDateParse("31/12/2017"))),
     OrderInformation("Name", "Phone", "Email", "Address"),
     Payment(PaymentMethod.BankTransfer, Some("Name")),
     Some("PAYMENT_PROOF"),
     Some(OrderShipment("JNE")),
-    Some("SHIPPING-ID")
+    Some("THIS_IS_RANDOM_RESULT")
   )
 
 

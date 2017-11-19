@@ -3,7 +3,7 @@ import actors.entities.cart.Item
 import models.dto.DtoMapperFormats._
 import models.dto.reference.ProductDto
 import models.entities.reference.Product
-import models.forms.order.CartForm.{Add, Remove}
+import models.forms.cart.CartForm.{Add, Remove}
 import models.forms.reference.ProductForm
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -24,7 +24,7 @@ class CartControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSuite
 
   val application = new GuiceApplicationBuilder()
     .loadConfig(env => Configuration.load(env))
-    .overrides(bind[RandomService].to[FakeRandomServiceImpl])
+    .overrides(bind[RandomService].to(new FakeRandomServiceImpl("")))
     .build()
 
   "CartControllerSpec" should {

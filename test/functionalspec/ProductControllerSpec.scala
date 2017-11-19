@@ -8,11 +8,13 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import testsupport.BaseData
+import services.application.RandomService
+import testsupport.{BaseData, FakeRandomServiceImpl}
 import utils.Mapper
 /**
   * Created by adildramdan on 11/19/17.
@@ -21,6 +23,7 @@ class ProductControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSu
 
   val application = new GuiceApplicationBuilder()
     .loadConfig(env => Configuration.load(env))
+    .overrides(bind[RandomService].to(new FakeRandomServiceImpl("THIS_IS_RANDOM_RESULT")))
     .build()
 
   "ProductControllerSpec" should {

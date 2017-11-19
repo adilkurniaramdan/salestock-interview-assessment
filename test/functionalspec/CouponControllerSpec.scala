@@ -23,7 +23,7 @@ class CouponControllerSpec extends PlaySpec with BaseData with GuiceOneAppPerSui
 
   val application = new GuiceApplicationBuilder()
     .loadConfig(env => Configuration.load(env))
-    .overrides(bind[RandomService].to[FakeRandomServiceImpl])
+    .overrides(bind[RandomService].to(new FakeRandomServiceImpl("THIS_IS_RANDOM_RESULT")))
     .build()
 
   "CouponControllerSpec" should {

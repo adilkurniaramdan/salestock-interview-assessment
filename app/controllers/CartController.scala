@@ -10,7 +10,7 @@ import akka.stream.Materializer
 import akka.util.Timeout
 import exceptions.ObjectNotFoundException
 import models.entities.reference.Product
-import models.forms.order.CartForm
+import models.forms.cart.CartForm
 import play.api.Configuration
 import play.api.libs.json.Json._
 import play.api.mvc.{AbstractController, ControllerComponents}
@@ -37,9 +37,9 @@ class CartController @Inject()(cc                        : ControllerComponents,
   def add(productId: Long) = Action.async(parse.json)(implicit r =>
     r.body.validate[CartForm.Add].fold(responseUtil.error(classOf[CartForm.Add]), data =>
       for{
-        _       <- checkCartAvailability("userId")
+        _       <- checkCartAvailability("USER_ID")
         product <- lookUpProduct(productId)
-        _       <- addProductToCart("userId", product, data.qty)
+        _       <- addProductToCart("USER_ID", product, data.qty)
       } yield {
         Created
       }
@@ -81,17 +81,17 @@ class CartController @Inject()(cc                        : ControllerComponents,
   )
 
   private def removeItemFromCart(product: Product, qty: Int) = {
-    (cartManager ? CartManager.Execute("userId", RemoveProductFromCart(product, qty)))
+    (cartManager ? CartManager.Execute("USER_ID", RemoveProductFromCart(product, qty)))
       .mapTo[ProductRemovedFromCart]
   }
 
   def clear() = Action.async(parse.empty) (implicit r =>
-    (cartManager ? CartManager.Execute("userId", ClearProduct))
+    (cartManager ? CartManager.Execute("USER_ID", ClearProduct))
       .map(_ => Ok)
   )
 
   def get() = Action.async(parse.empty) (implicit r =>
-    (cartManager ? CartManager.Execute("userId", GetProduct))
+    (cartManager ? CartManager.Execute("USER_ID", GetProduct))
       .mapTo[ResponseProduct]
       .map(_.products)
       .map(toJson(_))

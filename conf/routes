@@ -28,3 +28,5 @@ GET        /message                      controllers.AsyncController.message
 ->         /                             product.Routes
 
 ->         /                             cart.Routes
+
+->         /                             order.Routes

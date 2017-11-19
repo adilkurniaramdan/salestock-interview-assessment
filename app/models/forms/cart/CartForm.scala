@@ -1,4 +1,4 @@
-package models.forms.order
+package models.forms.cart
 
 import play.api.libs.json.Json
 import utils.RestJsonFormatExt

@@ -1,6 +1,7 @@
 package modules
 
 import actors.entities.cart.CartManager
+import actors.entities.order.{OrderActor, ShipmentActor}
 import actors.entities.reference.{CouponActor, ProductActor}
 import com.google.inject.AbstractModule
 import play.api.libs.concurrent.AkkaGuiceSupport
@@ -13,5 +14,7 @@ class ActorModule extends AbstractModule with AkkaGuiceSupport {
     bindActor[CouponActor]            (CouponActor.Name)
     bindActor[ProductActor]           (ProductActor.Name)
     bindActor[CartManager]            (CartManager.Name)
+    bindActor[OrderActor]             (OrderActor.Name)
+    bindActor[ShipmentActor]          (ShipmentActor.Name)
   }
 }

@@ -1,9 +1,11 @@
 package actors.entities.order
 
-import actors.entities.cart.{GetProductOrder, Item, ResponseProductOrder}
+import javax.inject.{Inject, Named}
+
+import actors.entities.cart._
 import actors.entities.order.ShipmentActor.{RequestShipmentID, ResponseShipmentID}
 import actors.entities.reference.ProductActor.UpdateQty
-import actors.entities.reference.{ValidateCoupon, ValidateItem}
+import actors.entities.reference.{CouponActor, ProductActor, ValidateCoupon, ValidateItem}
 import akka.actor.{ActorLogging, ActorRef, Props}
 import akka.persistence.PersistentActor
 import models.entities.order.OrderCoupon
@@ -12,14 +14,20 @@ import utils.Constants.OrderStatus
 /**
   * Created by adildramdan on 11/18/17.
   */
-class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: ActorRef, shipmentActor: ActorRef) extends PersistentActor with ActorLogging {
+class OrderActor @Inject()(@Named(ProductActor.Name) 
+                           productActor           : ActorRef,
+                           @Named(CouponActor.Name)
+                           couponActor            : ActorRef,
+                           @Named(CartManager.Name)
+                           cartManager            : ActorRef,
+                           @Named(ShipmentActor.Name)
+                           shipmentActor: ActorRef) extends PersistentActor with ActorLogging {
 
   private val state   = OrderState()
 
   override def persistenceId: String = self.path.name
 
   private def updateState(evt: Event) = {
-    log.info("Event========== {}" , evt)
     evt match {
       case e: Submitted             =>
         state.add(e.orderId, e.userId, e.items, e.coupon, e.payment, e.info, e.status)
@@ -45,7 +53,6 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
         state.updateStatus(e.orderId, e.status)
         context.become(handleQueryCommand)
     }
-    log.info("CURRENT STATE = {}", state)
   }
 
   override def receiveRecover: Receive = {
@@ -82,7 +89,7 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
 
   }
   private def lookUpCartItem(source: ActorRef, m: Submit) = {
-    cartActor ! GetProductOrder(sender(), m)
+    cartManager ! CartManager.Execute(m.userId, GetProductOrder(sender(), m))
   }
 
   private def notifyCartIsEmpty(source: ActorRef) = {
@@ -122,6 +129,7 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
     coupon.foreach{c =>
       couponActor ! UpdateQty(c.id.get, -1)
     }
+    cartManager ! CartManager.Execute(m.userId, ClearProduct)
   }
 
 
@@ -164,8 +172,8 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
   }
 }
 
-object OrderAggregate {
-  final val Name  = "order-aggregate"
-  def props(productActor: ActorRef, couponActor: ActorRef, cartActor: ActorRef, shipmentActor: ActorRef) =
-    Props(new OrderAggregate(productActor, couponActor, cartActor, shipmentActor))
+object OrderActor {
+  final val Name  = "order-actor"
+  def props(productActor: ActorRef, couponActor: ActorRef, cartManager: ActorRef, shipmentActor: ActorRef) =
+    Props(new OrderActor(productActor, couponActor, cartManager, shipmentActor))
 }

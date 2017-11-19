@@ -1,7 +1,7 @@
 package actors.entities.cart
 
 import actors._
-import akka.actor.{ActorContext, ActorLogging, ActorRef}
+import akka.actor.{ActorContext, ActorLogging, ActorRef, Props}
 import akka.persistence.PersistentActor
 /**
   * Created by adildramdan on 11/19/17.
@@ -44,6 +44,9 @@ class CartManager extends PersistentActor with ActorLogging {
 
 object CartManager {
   final val Name  = "cart-manager"
+
+  def props() =
+    Props(new CartManager())
 
   case class Create(userId: String) extends Query
   case class Check(userId: String) extends Query

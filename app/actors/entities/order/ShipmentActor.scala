@@ -1,19 +1,20 @@
 package actors.entities.order
 
-import java.util.UUID
+import javax.inject.Inject
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.event.LoggingReceive
+import services.application.RandomService
 
 /**
   * Created by adildramdan on 11/18/17.
   */
-class ShipmentActor extends Actor with ActorLogging {
+class ShipmentActor @Inject()(randomService: RandomService) extends Actor with ActorLogging {
   import ShipmentActor._
 
   def receive = LoggingReceive {
     case m: RequestShipmentID  =>
-      sender() ! ResponseShipmentID(m.source, m.data, UUID.randomUUID().toString)
+      sender() ! ResponseShipmentID(m.source, m.data, randomService.randomAlphaNumericString(15))
   }
 }
 

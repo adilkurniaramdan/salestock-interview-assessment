@@ -5,9 +5,9 @@ import services.application.RandomService
 /**
   * Created by adildramdan on 11/19/17.
   */
-class FakeRandomServiceImpl extends RandomService {
+class FakeRandomServiceImpl(value: String) extends RandomService {
   def randomAlphaNumericString(length: Int): String = {
-    "CODECOUPON"
+    value
   }
 
   def randomStringFromCharList(length: Int, chars: Seq[Char]): String = {

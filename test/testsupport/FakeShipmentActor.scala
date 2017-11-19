@@ -11,7 +11,7 @@ class FakeShipmentActor extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case m: RequestShipmentID  =>
-      sender() ! ResponseShipmentID(m.source, m.data, "SHIPPING-ID")
+      sender() ! ResponseShipmentID(m.source, m.data, "THIS_IS_RANDOM_RESULT")
   }
 }
 

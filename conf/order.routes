@@ -1,0 +1,105 @@
+###
+#  summary: Submit Order
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.OrderForm.Submit'
+#  responses:
+#    200:
+#      description: success
+###
+POST        /api/v1/order/submit                      @controllers.OrderController.submit()
+###
+#  summary: RequestVerification paymentProof Order
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.OrderForm.RequestVerification'
+#  responses:
+#    200:
+#      description: success
+###
+POST        /api/v1/order/request-verification        @controllers.OrderController.requestVerification()
+###
+#  summary: Verify Order
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.OrderForm.Verify'
+#  responses:
+#    200:
+#      description: success
+###
+POST        /api/v1/order/verify                      @controllers.OrderController.verify()
+###
+#  summary: Cancel Order
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.OrderForm.Cancel'
+#  responses:
+#    200:
+#      description: success
+###
+POST        /api/v1/order/cancel                      @controllers.OrderController.cancel()
+###
+#  summary: Request Shipment Order
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.OrderForm.RequestShipment'
+#  responses:
+#    200:
+#      description: success
+###
+POST        /api/v1/order/request-shipment            @controllers.OrderController.requestShipment()
+###
+#  summary: Finish Order
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.order.OrderForm.Finish'
+#  responses:
+#    200:
+#      description: success
+###
+POST        /api/v1/order/finish                      @controllers.OrderController.finish()
+
+###
+#  summary: Get Item In Order
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/actors.entities.order.Item'
+###
+GET         /api/v1/order                             @controllers.OrderController.get()

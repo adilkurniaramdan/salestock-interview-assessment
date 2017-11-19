@@ -33,5 +33,6 @@ object Constants {
     val ObjectAlreadyExist      = "OBJECT_ALREADY_EXIST"
     val AuthenticationFailed    = "AUTHENTICATION_FAILED"
     val InvalidData             = "INVALID_DATA"
+    val OutOfStock              = "OUT_OF_STOCK"
   }
 }

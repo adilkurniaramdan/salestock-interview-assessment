@@ -2,6 +2,7 @@ package actors.entities.order
 
 import actors.entities.cart.Item
 import models.entities.order._
+import utils.Constants.Rate
 
 /**
   * Created by adildramdan on 11/18/17.
@@ -44,6 +45,20 @@ case class OrderState(private var orders: Map[String, (Order, String)] = Map.emp
     }
   }
 
-  def orderDetail: List[OrderDetail] = orders.map{case (_, v) => OrderDetail(v._1, v._2)}.toList
+  def orderDetail: List[OrderDetail] = orders.map{case (_, v) => OrderDetail(v._1, v._2, calculateTotal(v._1))}.toList
 
+  private def calculateTotal(order: Order) = {
+    val total   = order.items.map(item => item.product.unitPrice * item.qty).sum
+    order.coupon match {
+      case Some(coupon) =>
+        coupon.rate match {
+          case Rate.Nominal     =>
+            total - coupon.amount
+          case Rate.Percentage  =>
+            total - ((coupon.amount / 100) * total)
+        }
+      case None         =>
+        total
+    }
+  }
 }
