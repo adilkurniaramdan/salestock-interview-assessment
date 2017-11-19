@@ -7,7 +7,7 @@ import actors.entities.reference.{ValidateCoupon, ValidateItem}
 import akka.actor.{ActorLogging, ActorRef, Props}
 import akka.persistence.PersistentActor
 import models.entities.order.OrderCoupon
-import models.entities.order.OrderStatuses.{OrderCanceled, OrderFinish, OrderRequestVerification, OrderShipped, OrderSubmitted, OrderVerified}
+import utils.Constants.OrderStatus
 
 /**
   * Created by adildramdan on 11/18/17.
@@ -19,27 +19,40 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
   override def persistenceId: String = self.path.name
 
   private def updateState(evt: Event) = {
+    log.info("Event========== {}" , evt)
     evt match {
       case e: Submitted             =>
-        state.add(e.userId, e.items, e.coupon, e.payment, e.info, e.status)
+        state.add(e.orderId, e.userId, e.items, e.coupon, e.payment, e.info, e.status)
+        context.become(handleRequestVerificationCommand orElse handleQueryCommand)
+
       case e: ResponseVerification  =>
         state.updatePaymentProof(e.orderId, e.paymentProof, e.status)
+        context.become(handleVerifyCommand orElse handleQueryCommand)
+
       case e: Verified              =>
         state.updateStatus(e.orderId, e.status)
+        context.become(handleRequestShipmentCommand orElse handleQueryCommand)
+
       case e: Shipped               =>
         state.updateShipment(e.orderId, e.shipment, e.shipmentId, e.status)
+        context.become(handleFinishCommand orElse handleQueryCommand)
+
       case e: Finished              =>
         state.updateStatus(e.orderId, e.status)
+        context.become(handleQueryCommand)
+
       case e: Canceled              =>
         state.updateStatus(e.orderId, e.status)
+        context.become(handleQueryCommand)
     }
+    log.info("CURRENT STATE = {}", state)
   }
 
   override def receiveRecover: Receive = {
     case e: Event => updateState(e)
   }
 
-  override def receiveCommand: Receive = handleSubmitCommand
+  override def receiveCommand: Receive = handleSubmitCommand orElse handleQueryCommand
 
   // 2. Customer can apply one coupon to order, only one coupon can be applied to order
   // 3. Customer can submit an order and the order is finalized
@@ -50,7 +63,10 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
       lookUpCartItem(sender(), m)
 
     case m: ResponseProductOrder  =>
-      validateItemAvailability(m.source, m.data, m.items)
+      if(m.items.nonEmpty)
+        validateItemAvailability(m.source, m.data, m.items)
+      else
+        notifyCartIsEmpty(m.source)
 
     case m: ValidateItem.Successful       =>
       validateCouponValidity(m.response.source, m.response.data, m.response.items)
@@ -67,6 +83,10 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
   }
   private def lookUpCartItem(source: ActorRef, m: Submit) = {
     cartActor ! GetProductOrder(sender(), m)
+  }
+
+  private def notifyCartIsEmpty(source: ActorRef) = {
+    source            ! ItemNotAvailable("Cart is empty")
   }
 
   private def validateItemAvailability(source: ActorRef, m: Submit, items: List[Item]) = {
@@ -92,7 +112,7 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
 
   private def handleSubmitValidationSuccess(source: ActorRef, m: Submit, items: List[Item], coupon: Option[OrderCoupon]) = {
     persistAndUpdateState(
-      Submitted(m.userId, items, coupon, m.payment, m.info, OrderSubmitted),
+      Submitted(m.orderId, m.userId, items, coupon, m.payment, m.info, OrderStatus.OrderSubmitted),
       source
     )
     // 6. When an order is submitted, the quantity for ordered product will be reduced based on the quantity.
@@ -102,38 +122,34 @@ class OrderAggregate(productActor: ActorRef, couponActor: ActorRef, cartActor: A
     coupon.foreach{c =>
       couponActor ! UpdateQty(c.id.get, -1)
     }
-
-    context.become(handleRequestVerificationCommand orElse handleQueryCommand)
   }
 
 
   private def handleRequestVerificationCommand: Receive = {
     case m: RequestVerification =>
-      persistAndUpdateState(ResponseVerification(m.orderId, m.paymentProof, OrderRequestVerification))
-      context.become(handleVerifyCommand orElse handleQueryCommand)
+      persistAndUpdateState(ResponseVerification(m.orderId, m.paymentProof, OrderStatus.OrderRequestVerification))
   }
 
   private def handleVerifyCommand: Receive = {
     case m: Verify  =>
-      persistAndUpdateState(Verified(m.orderId, OrderVerified))
-      context.become(handleRequestShipmentCommand orElse handleQueryCommand)
+      persistAndUpdateState(Verified(m.orderId, OrderStatus.OrderVerified))
+
     case m: Cancel  =>
-      persistAndUpdateState(Canceled(m.orderId, OrderCanceled))
-      context.become(handleQueryCommand)
+      persistAndUpdateState(Canceled(m.orderId, OrderStatus.OrderCanceled))
+
   }
 
   private def handleRequestShipmentCommand: Receive = {
     case m: RequestShipment     =>
       shipmentActor ! RequestShipmentID(sender(), m)
     case m: ResponseShipmentID  =>
-      persistAndUpdateState(Shipped(m.data.orderId, m.data.shipment, m.shipmentId, OrderShipped), m.source)
-      context.become(handleFinishCommand orElse handleQueryCommand)
+      persistAndUpdateState(Shipped(m.data.orderId, m.data.shipment, m.shipmentId, OrderStatus.OrderShipped), m.source)
+
   }
 
   private def handleFinishCommand: Receive = {
     case m: Finish  =>
-      persistAndUpdateState(Finished(m.orderId, OrderFinish))
-      context.become(handleQueryCommand)
+      persistAndUpdateState(Finished(m.orderId, OrderStatus.OrderFinish))
   }
 
   private def handleQueryCommand: Receive = {

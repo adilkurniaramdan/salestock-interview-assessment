@@ -10,7 +10,6 @@ import models.dto.Page
 import models.entities.Amount
 import models.entities.order.OrderCoupon
 import models.entities.reference.Coupon
-import models.entities.reference.Rates.Rate
 import org.joda.time.LocalDate
 import repositories.reference.CouponRepository
 import services.application.RandomService
@@ -64,7 +63,7 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
     couponRepository.page(page, size, sort, sortBy, filter)
   }
 
-  private def create(name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) = {
+  private def create(name : String, description : String, amount: Amount, rate: String, qty: Int, start: LocalDate, end: LocalDate) = {
     val coupon = Coupon(
       id          = None,
       code        = None,
@@ -100,7 +99,7 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
     couponRepository.findById(id)
   }
 
-  private def update(id: Long, name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) = {
+  private def update(id: Long, name : String, description : String, amount: Amount, rate: String, qty: Int, start: LocalDate, end: LocalDate) = {
     couponRepository
       .findById(id)
       .flatMap {
@@ -135,7 +134,7 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
       .map{
         case Some(coupon) if coupon.start.isBefore(LocalDate.now())
           && coupon.end.isAfter(LocalDate.now())
-          && coupon.qty >= 0 =>
+          && coupon.qty > 0 =>
           ValidateCoupon.Successful(
             m,
             OrderCoupon(
@@ -165,9 +164,9 @@ object CouponActor {
 
   sealed trait Command
   case class RequestPage(page: Int, size: Int, sort: String, sortBy: String, filter: String) extends Command
-  case class Create(name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) extends Command
+  case class Create(name : String, description : String, amount: Amount, rate: String, qty: Int, start: LocalDate, end: LocalDate) extends Command
   case class Get(id: Long) extends Command
-  case class Update(id: Long, name : String, description : String, amount: Amount, rate: Rate, qty: Int, start: LocalDate, end: LocalDate) extends Command
+  case class Update(id: Long, name : String, description : String, amount: Amount, rate: String, qty: Int, start: LocalDate, end: LocalDate) extends Command
   case class Delete(id: Long) extends Command
   case class UpdateQty(id: Long, qty: Int) extends Command
 

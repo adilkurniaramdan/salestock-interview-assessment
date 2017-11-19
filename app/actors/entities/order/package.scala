@@ -1,13 +1,11 @@
 package actors.entities
 
 import actors.entities.cart.Item
-import models.entities.order.OrderStatuses.OrderStatus
 import models.entities.order.{OrderCoupon, OrderInformation, OrderShipment, Payment}
-import models.entities.reference.Coupon
 
 package object order{
   sealed trait Command
-  case class Submit(userId: String, coupon: Option[String], payment: Payment, info: OrderInformation) extends Command
+  case class Submit(orderId: String, userId: String, coupon: Option[String], payment: Payment, info: OrderInformation) extends Command
   case class RequestVerification(orderId: String, paymentProof: String) extends Command
   case class Verify(orderId: String) extends Command
   case class RequestShipment(orderId: String, shipment: OrderShipment) extends Command
@@ -15,12 +13,12 @@ package object order{
   case class Cancel(orderId: String) extends Command
 
   sealed trait Event
-  case class Submitted(userId: String, items : List[Item], coupon: Option[OrderCoupon], payment: Payment, info: OrderInformation, status: OrderStatus) extends Event
-  case class ResponseVerification(orderId: String, paymentProof: String, status: OrderStatus)  extends Event
-  case class Verified(orderId: String, status: OrderStatus) extends Event
-  case class Shipped(orderId: String, shipment: OrderShipment, shipmentId: String, status: OrderStatus) extends Event
-  case class Finished(orderId: String, status: OrderStatus) extends Event
-  case class Canceled(orderId: String, status: OrderStatus) extends Event
+  case class Submitted(orderId: String, userId: String, items : List[Item], coupon: Option[OrderCoupon], payment: Payment, info: OrderInformation, status: String) extends Event
+  case class ResponseVerification(orderId: String, paymentProof: String, status: String)  extends Event
+  case class Verified(orderId: String, status: String) extends Event
+  case class Shipped(orderId: String, shipment: OrderShipment, shipmentId: String, status: String) extends Event
+  case class Finished(orderId: String, status: String) extends Event
+  case class Canceled(orderId: String, status: String) extends Event
 
 
   sealed trait Query

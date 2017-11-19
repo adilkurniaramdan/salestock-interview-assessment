@@ -9,6 +9,21 @@ object Constants {
   object DatePattern {
     val DATE_SLASH            = "dd/MM/yyyy"
     val DATE_TIME_SLASH       = "dd/MM/yyy HH:mm:ss"
+  }
+  object Rate {
+    val Nominal               = "nominal"
+    val Percentage            = "percentage"
+  }
+  object PaymentMethod {
+    val BankTransfer          = "bank-transfer"
+  }
 
+  object OrderStatus {
+    val OrderSubmitted            = "order-submitted"
+    val OrderRequestVerification  = "order-request-verification"
+    val OrderVerified             = "order-verified"
+    val OrderShipped              = "order-shipped"
+    val OrderFinish               = "order-finish"
+    val OrderCanceled             = "order-canceled"
   }
 }

@@ -95,21 +95,21 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
   }
 
   private def checkProductStock(m: ValidateItem) = {
-    def loop(items: List[Item], acc: List[(Item, Boolean)]): Future[List[(Item, Boolean)]] = items match {
+    def loop(items: List[Item], acc: List[Boolean]): Future[List[Boolean]] = items match {
       case h :: t   =>
         productRepository
           .findById(h.product.id.get)
           .flatMap{
-            case Some(product) if product.qty >= h.qty  => loop(t, (h, true) :: acc)
-            case _                                      => loop(t, (h, false) :: acc)
+            case Some(product) if product.qty >= h.qty  => loop(t, true :: acc)
+            case _                                      => loop(t, false :: acc)
           }
       case Nil  =>
         future(acc)
     }
     val check = loop(m.items, Nil)
-    check.map(_.forall{case (_, available) => available}).map{
-      case true   => ValidateItem.Successful(m)
-      case false  => ValidateItem.Unsuccessful(m, "Not all item available")
+    check.map{ x =>
+      if (x.forall(_ == true)) ValidateItem.Successful(m)
+      else ValidateItem.Unsuccessful(m, "Not all item available")
     }
   }
 

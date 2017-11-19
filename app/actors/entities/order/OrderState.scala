@@ -1,18 +1,14 @@
 package actors.entities.order
 
-import java.util.UUID
-
 import actors.entities.cart.Item
-import models.entities.order.OrderStatuses.OrderStatus
 import models.entities.order._
 
 /**
   * Created by adildramdan on 11/18/17.
   */
 
-case class OrderState(private var orders: Map[String, (Order, OrderStatus)] = Map.empty) {
-  def add(userId: String, items : List[Item], coupon: Option[OrderCoupon], payment: Payment, info: OrderInformation, status: OrderStatus): Unit = {
-    val orderId = UUID.randomUUID().toString
+case class OrderState(private var orders: Map[String, (Order, String)] = Map.empty) {
+  def add(orderId: String, userId: String, items : List[Item], coupon: Option[OrderCoupon], payment: Payment, info: OrderInformation, status: String): Unit = {
     val order = Order(
       id      = orderId,
       userId  = userId,
@@ -24,7 +20,7 @@ case class OrderState(private var orders: Map[String, (Order, OrderStatus)] = Ma
     orders = orders + (orderId -> (order, status))
   }
 
-  def updatePaymentProof(orderId: String, paymentProof: String, status: OrderStatus) = {
+  def updatePaymentProof(orderId: String, paymentProof: String, status: String) = {
     orders.get(orderId) match {
       case Some(order)  =>
         orders = orders + (orderId -> (order._1.copy(paymentProof = Some(paymentProof)), status))
@@ -32,7 +28,7 @@ case class OrderState(private var orders: Map[String, (Order, OrderStatus)] = Ma
     }
   }
 
-  def updateShipment(orderId: String, shipment: OrderShipment, shipmentId: String, status: OrderStatus) = {
+  def updateShipment(orderId: String, shipment: OrderShipment, shipmentId: String, status: String) = {
     orders.get(orderId) match {
       case Some(order)  =>
         orders = orders + (orderId -> (order._1.copy(shipment = Some(shipment), shipmentId = Some(shipmentId)), status))
@@ -40,7 +36,7 @@ case class OrderState(private var orders: Map[String, (Order, OrderStatus)] = Ma
     }
   }
 
-  def updateStatus(orderId: String, status: OrderStatus) = {
+  def updateStatus(orderId: String, status: String) = {
     orders.get(orderId) match {
       case Some(order)  =>
         orders = orders + (orderId -> (order._1, status))
