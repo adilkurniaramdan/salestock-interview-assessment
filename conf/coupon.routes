@@ -1,0 +1,72 @@
+###
+#  summary: Create Coupon
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.reference.CouponForm.Create'
+#  responses:
+#    201:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/models.dto.reference.CouponDto'
+###
+POST          /api/v1/coupons               @controllers.CouponController.create()
+###
+#  summary: Page Coupon
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+###
+GET           /api/v1/coupons               @controllers.CouponController.page(page:Int?=1, size:Int?=50, sort:String?= "asc", sortBy?="id", filter = "")
+###
+#  summary: Get Coupon By ID
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/models.dto.reference.CouponDto'
+###
+GET           /api/v1/coupons/:id           @controllers.CouponController.get(id:Long)
+###
+#  summary: Update Coupon
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.reference.CouponForm.Update'
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/models.dto.reference.CouponDto'
+###
+PUT           /api/v1/coupons/:id           @controllers.CouponController.update(id:Long)
+###
+#  summary: Delete Coupon By ID
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default: 
+#  responses:
+#    200:
+#      description: success
+###
+DELETE        /api/v1/coupons/:id           @controllers.CouponController.delete(id:Long)

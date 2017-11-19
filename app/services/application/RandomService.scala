@@ -1,14 +1,18 @@
 package services.application
 
-import javax.inject.Singleton
-
 
 /**
   * Created by adildramdan on 11/17/17.
   */
-@Singleton
-class RandomService {
 
+trait RandomService {
+
+  def randomAlphaNumericString(length: Int): String
+
+  def randomStringFromCharList(length: Int, chars: Seq[Char]): String
+}
+
+class RandomServiceImpl() extends RandomService {
   def randomAlphaNumericString(length: Int): String = {
     val chars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9')
     randomStringFromCharList(length, chars)

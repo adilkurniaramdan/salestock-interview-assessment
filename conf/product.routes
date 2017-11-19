@@ -1,0 +1,72 @@
+###
+#  summary: Create Product
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.reference.ProductForm.Create'
+#  responses:
+#    201:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/models.dto.reference.ProductDto'
+###
+POST          /api/v1/products               @controllers.ProductController.create()
+###
+#  summary: Page Product
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+###
+GET           /api/v1/products               @controllers.ProductController.page(page:Int?=1, size:Int?=50, sort:String?= "asc", sortBy?="id", filter = "")
+###
+#  summary: Get Product By ID
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/models.dto.reference.ProductDto'
+###
+GET           /api/v1/products/:id           @controllers.ProductController.get(id:Long)
+###
+#  summary: Update Product
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default:
+#    - name: body
+#      schema:
+#        $ref: '#/definitions/models.forms.reference.ProductForm.Update'
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/models.dto.reference.ProductDto'
+###
+PUT           /api/v1/products/:id           @controllers.ProductController.update(id:Long)
+###
+#  summary: Delete Product By ID
+#  parameters:
+#    - name: X-Auth-Token
+#      in: header
+#      type: string
+#      default: 
+#  responses:
+#    200:
+#      description: success
+###
+DELETE        /api/v1/products/:id           @controllers.ProductController.delete(id:Long)

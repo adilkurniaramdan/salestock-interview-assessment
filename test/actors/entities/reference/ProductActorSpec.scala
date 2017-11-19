@@ -26,13 +26,13 @@ class ProductActorSpec extends ActorSpec with BaseData with EasyMockSugar {
       expecting{
         productRepository
           .page(anyInt(), anyInt(), anyString(), anyString(), anyString())
-          .andReturn(future(page))
+          .andReturn(future((page.data, page.total)))
       }
       replay(productRepository)
       val productActor  = system.actorOf(ProductActor.props(productRepository))
 
       productActor ! ProductActor.RequestPage(1, 10, "asc", "id", "")
-      expectMsg(ProductActor.ResponsePage(page))
+      expectMsg(ProductActor.ResponsePage(page.data, page.total))
 
       verify(productRepository)
     }

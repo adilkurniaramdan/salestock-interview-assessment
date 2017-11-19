@@ -3,6 +3,7 @@ package testsupport
 import actors.entities.cart.Item
 import models.entities.order._
 import models.entities.reference.{Coupon, Product}
+import models.forms.reference.ProductForm
 import utils.Constants.{PaymentMethod, Rate}
 import utils.helpers.JodaHelper
 
@@ -43,6 +44,25 @@ trait BaseData {
     Some("PAYMENT_PROOF"),
     Some(OrderShipment("JNE")),
     Some("SHIPPING-ID")
-
   )
+
+  object ProductFormData {
+    def create() = ProductForm.Create(
+      "Name",
+      "Description",
+      100,
+      1000
+    )
+    def update() = ProductForm.Update(
+      "Name Update",
+      "Description Update",
+      200,
+      2000
+    )
+
+
+  }
+
+
+
 }

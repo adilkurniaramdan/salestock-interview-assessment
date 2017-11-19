@@ -27,13 +27,13 @@ class CouponActorSpec extends ActorSpec with BaseData with EasyMockSugar {
       expecting{
         couponRepository
           .page(anyInt(), anyInt(), anyString(), anyString(), anyString())
-          .andReturn(future(page))
+          .andReturn(future((page.data, page.total)))
       }
       replay(couponRepository)
       val couponActor  = system.actorOf(CouponActor.props(couponRepository, randomService))
 
       couponActor ! CouponActor.RequestPage(1, 10, "asc", "id", "")
-      expectMsg(CouponActor.ResponsePage(page))
+      expectMsg(CouponActor.ResponsePage(page.data, page.total))
 
       verify(couponRepository)
     }

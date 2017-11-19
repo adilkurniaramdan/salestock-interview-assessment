@@ -24,7 +24,7 @@ class ProductActor @Inject()(productRepository: ProductRepository)(implicit ec: 
   def receive = LoggingReceive {
     case m: RequestPage =>
       requestPage(m.page, m.size, m.sort, m.sortBy, m.filter)
-        .map(ResponsePage)
+        .map(data => ResponsePage(data._1, data._2))
         .pipeTo(sender())
 
     case m: Create  =>
@@ -131,7 +131,7 @@ object ProductActor {
   case class UpdateQty(id: Long, qty: Int) extends Command
 
   sealed trait Event
-  case class ResponsePage(page: Page[Product]) extends Event
+  case class ResponsePage(data: List[Product], total: Int) extends Event
   case class Created(product: Product) extends Event
   case class GetResponse(product: Option[Product]) extends Command
   case class Updated(product: Product) extends Event

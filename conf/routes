@@ -22,3 +22,6 @@ GET        /                             controllers.AppController.index
 GET        /count                        controllers.CountController.count
 ### NoDocs ###
 GET        /message                      controllers.AsyncController.message
+
+->         /                             coupon.Routes
+->         /                             product.Routes

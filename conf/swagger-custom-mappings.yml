@@ -1,0 +1,9 @@
+---
+  - type: org.joda.time.LocalDate
+    specAsParameter:
+      - type: string
+        default: dd/MM/yyyy
+  - type: org.joda.time.LocalTime
+    specAsParameter:
+      - type: string
+        default: HH:mm

@@ -26,4 +26,12 @@ object Constants {
     val OrderFinish               = "order-finish"
     val OrderCanceled             = "order-canceled"
   }
+
+  object ErrorCode {
+    val JsonError               = "JSON_ERROR"
+    val ValidationError         = "VALIDATION_ERROR"
+    val ObjectAlreadyExist      = "OBJECT_ALREADY_EXIST"
+    val AuthenticationFailed    = "AUTHENTICATION_FAILED"
+    val InvalidData             = "INVALID_DATA"
+  }
 }

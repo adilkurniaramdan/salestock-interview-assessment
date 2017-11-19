@@ -27,7 +27,7 @@ class CouponActor @Inject()(couponRepository: CouponRepository,
   def receive = LoggingReceive {
     case m: RequestPage =>
       requestPage(m.page, m.size, m.sort, m.sortBy, m.filter)
-        .map(ResponsePage)
+        .map(data => ResponsePage(data._1, data._2))
         .pipeTo(sender())
 
     case m: Create  =>
@@ -171,7 +171,7 @@ object CouponActor {
   case class UpdateQty(id: Long, qty: Int) extends Command
 
   sealed trait Event
-  case class ResponsePage(page: Page[Coupon]) extends Event
+  case class ResponsePage(data: List[Coupon], total : Int) extends Event
   case class Created(coupon: Coupon) extends Event
   case class GetResponse(coupon: Option[Coupon]) extends Command
   case class Updated(coupon: Coupon) extends Event
