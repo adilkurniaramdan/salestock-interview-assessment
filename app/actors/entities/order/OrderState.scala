@@ -45,9 +45,12 @@ case class OrderState(private var orders: Map[String, (Order, String)] = Map.emp
     }
   }
 
-  def orderDetail: List[OrderDetail] = orders.map{case (_, v) => OrderDetail(v._1, v._2, calculateTotal(v._1))}.toList
-
   def get(orderId: String) =
+    orders.get(orderId).map(_._1)
+
+  def getAllDetail: List[OrderDetail] = orders.map{case (_, v) => OrderDetail(v._1, v._2, calculateTotal(v._1))}.toList
+
+  def getDetail(orderId: String) =
     orders.get(orderId).map{v => OrderDetail(v._1, v._2, calculateTotal(v._1))}
 
   def getByShippingId(shippingId: String) =

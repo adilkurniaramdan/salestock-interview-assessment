@@ -2,6 +2,7 @@ package functionalspec
 import actors.entities.order.OrderDetail
 import com.mohiva.play.silhouette.test._
 import models.dto.DtoMapperFormats._
+import models.dto.Page
 import models.dto.reference.{CouponDto, ProductDto}
 import models.entities.reference.{Coupon, Product}
 import models.forms.cart.CartForm.Add
@@ -190,6 +191,48 @@ class OrderControllerFinishedSpec extends PlaySpec with Context with BaseData wi
       status(get) mustBe Status.OK
       contentType(get) mustBe Some("application/json")
       contentAsJson(get) mustBe toJson(response)
+    }
+
+    "check qty of product decreased" in {
+      val response    = Page(
+        data  = List(Mapper.map[Product, ProductDto](product.copy(qty = product.qty - 10))),
+        page  = 1,
+        size  = 10,
+        sort  = "asc",
+        sortBy= "id" ,
+        total = 1,
+        filter= ""
+      )
+      val page      = route(
+        application,
+        FakeRequest(GET, "/api/v1/products?page=1&size=10&sort=asc&sortBy=id&filter")
+          .withAuthenticator[DefaultEnv](admin.loginInfo)
+      ).get
+
+      status(page) mustBe Status.OK
+      contentType(page) mustBe Some("application/json")
+      contentAsJson(page) mustBe toJson(response)
+    }
+
+    "check qty of coupon decreased" in {
+      val response    = Page(
+        data  = List(Mapper.map[Coupon, CouponDto](coupon.copy(qty = coupon.qty -1))),
+        page  = 1,
+        size  = 10,
+        sort  = "asc",
+        sortBy= "id" ,
+        total = 1,
+        filter= ""
+      )
+      val page      = route(
+        application,
+        FakeRequest(GET, "/api/v1/coupons?page=1&size=10&sort=asc&sortBy=id&filter")
+          .withAuthenticator[DefaultEnv](admin.loginInfo)
+      ).get
+
+      status(page) mustBe Status.OK
+      contentType(page) mustBe Some("application/json")
+      contentAsJson(page) mustBe toJson(response)
     }
   }
 }

@@ -4,7 +4,6 @@ import javax.inject.{Inject, Named}
 
 import actors.entities.cart._
 import actors.entities.order.ShipmentActor.{RequestShipmentID, ResponseShipmentID}
-import actors.entities.reference.ProductActor.UpdateQty
 import actors.entities.reference.{CouponActor, ProductActor, ValidateCoupon, ValidateItem}
 import akka.actor.{ActorLogging, ActorRef, Props}
 import akka.persistence.PersistentActor
@@ -124,10 +123,10 @@ class OrderActor @Inject()(@Named(ProductActor.Name)
     )
     // 6. When an order is submitted, the quantity for ordered product will be reduced based on the quantity.
     items.foreach{ item =>
-      productActor ! UpdateQty(item.product.id.get, -item.qty)
+      productActor ! ProductActor.UpdateQty(item.product.id.get, -item.qty)
     }
     coupon.foreach{c =>
-      couponActor ! UpdateQty(c.id.get, -1)
+      couponActor ! CouponActor.UpdateQty(c.id.get, -1)
     }
     cartManager ! CartManager.Execute(m.userId, ClearProduct)
   }
@@ -144,6 +143,14 @@ class OrderActor @Inject()(@Named(ProductActor.Name)
 
     case m: Cancel  =>
       persistAndUpdateState(Canceled(m.orderId, OrderStatus.OrderCanceled))
+      state.get(m.orderId).foreach{ order =>
+        order.items.foreach{ item =>
+          productActor ! ProductActor.UpdateQty(item.product.id.get, item.qty)
+        }
+        order.coupon.foreach{c =>
+          couponActor ! CouponActor.UpdateQty(c.id.get, 1)
+        }
+      }
 
   }
 
@@ -161,8 +168,8 @@ class OrderActor @Inject()(@Named(ProductActor.Name)
   }
 
   private def handleQueryCommand: Receive = {
-    case GetOrder          => sender() ! ResponseOrder(state.orderDetail)
-    case m: GetOrderById   => sender() ! ResponseOrderOpt(state.get(m.orderId))
+    case GetOrder          => sender() ! ResponseOrder(state.getAllDetail)
+    case m: GetOrderById   => sender() ! ResponseOrderOpt(state.getDetail(m.orderId))
     case m: GetOrderByUser => sender() ! ResponseOrder(state.getByUser(m.userId))
     case m: GetOrderByShippingId => sender() ! ResponseOrderOpt(state.getByShippingId(m.shippingId))
   }
